@@ -171,8 +171,13 @@ function buildVolumeMounts(
   });
 
   // Gmail credentials directory (for Gmail MCP inside the container)
-  const homeDir = os.homedir();
-  const gmailDir = path.join(homeDir, '.gmail-mcp');
+  // Try project-local data/gmail-mcp first (works in sandboxed environments),
+  // then fall back to ~/.gmail-mcp (standard location on host machines).
+  const projectGmailDir = path.join(projectRoot, 'data', 'gmail-mcp');
+  const homeGmailDir = path.join(os.homedir(), '.gmail-mcp');
+  const gmailDir = fs.existsSync(path.join(projectGmailDir, 'credentials.json'))
+    ? projectGmailDir
+    : homeGmailDir;
   if (fs.existsSync(gmailDir)) {
     mounts.push({
       hostPath: gmailDir,

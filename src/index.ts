@@ -536,11 +536,17 @@ async function main(): Promise<void> {
     }
     channels.push(channel);
     connectPromises.push(
-      channel.connect().then(() => {
-        logger.info({ channel: channelName }, 'Channel connected');
-      }).catch((err) => {
-        logger.warn({ channel: channelName, err: (err as Error).message }, 'Channel connect failed');
-      }),
+      channel
+        .connect()
+        .then(() => {
+          logger.info({ channel: channelName }, 'Channel connected');
+        })
+        .catch((err) => {
+          logger.warn(
+            { channel: channelName, err: (err as Error).message },
+            'Channel connect failed',
+          );
+        }),
     );
   }
   await Promise.all(connectPromises);

@@ -425,8 +425,14 @@ async function runQuery(
           },
         },
         gmail: {
-          command: 'npx',
-          args: ['-y', '@gongrzhe/server-gmail-autoauth-mcp'],
+          command: 'node',
+          args: ['--input-type=commonjs', '-e', "require('/usr/local/lib/node_modules/global-agent/dist/routines/bootstrap.js').default();require('/usr/local/lib/node_modules/@gongrzhe/server-gmail-autoauth-mcp/dist/index.js');"],
+          env: {
+            GLOBAL_AGENT_HTTP_PROXY: (process.env.HTTP_PROXY || '').replace('host.docker.internal', '192.168.65.254'),
+            GLOBAL_AGENT_NO_PROXY: process.env.NO_PROXY || '',
+            NODE_TLS_REJECT_UNAUTHORIZED: '0',
+            ...(process.env.NODE_EXTRA_CA_CERTS ? { NODE_EXTRA_CA_CERTS: process.env.NODE_EXTRA_CA_CERTS } : {}),
+          },
         },
       },
       hooks: {

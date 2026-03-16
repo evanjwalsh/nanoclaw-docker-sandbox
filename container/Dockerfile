@@ -40,8 +40,8 @@ ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
 ARG npm_config_strict_ssl=true
 RUN npm config set strict-ssl ${npm_config_strict_ssl}
 
-# Install agent-browser and claude-code globally
-RUN npm install -g agent-browser @anthropic-ai/claude-code
+# Install agent-browser, claude-code, and Gmail MCP server globally
+RUN npm install -g agent-browser @anthropic-ai/claude-code @gongrzhe/server-gmail-autoauth-mcp global-agent
 
 # Create app directory
 WORKDIR /app
