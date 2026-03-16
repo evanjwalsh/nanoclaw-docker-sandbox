@@ -1,9 +1,16 @@
 import https from 'https';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { Api, Bot } from 'grammy';
 
 import { ASSISTANT_NAME, TRIGGER_PATTERN } from '../config.js';
 import { readEnvFile } from '../env.js';
 import { logger } from '../logger.js';
+
+const proxyUrl =
+  process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY;
+const telegramAgent = proxyUrl
+  ? new HttpsProxyAgent(proxyUrl)
+  : https.globalAgent;
 import { registerChannel, ChannelOpts } from './registry.js';
 import {
   Channel,
@@ -56,7 +63,7 @@ export class TelegramChannel implements Channel {
   async connect(): Promise<void> {
     this.bot = new Bot(this.botToken, {
       client: {
-        baseFetchConfig: { agent: https.globalAgent, compress: true },
+        baseFetchConfig: { agent: telegramAgent, compress: true },
       },
     });
 
